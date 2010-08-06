@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 
-# file:code-snippets.rb
+# file: code-snippets.rb
 
 require 'dynarex-usersblog'
 require 'nokogiri'
@@ -47,7 +47,20 @@ class CodeSnippets
     rss_cached(user+tag) { @blog.user(user).tag(tag).page(1) }
   end    
   
-  #private
+  def show(id)
+    
+    doc = Document.new('<result><summary/><records/></result>')            
+    entry = @blog.entry(id).dup
+    doc.root.elements['records'].add entry
+
+    (tags = " [%s]" % entry.text('tags').split(/\s/).join('] [')) if entry.text('tags')
+    doc.root.elements['summary'].add Element.new('title').add_text(entry.text('title').to_s + tags)    
+    prepare_doc doc
+    
+    render_html doc, @xsl_doc_single    
+  end
+  
+  private
     
   def html_page(n)
     @args = [n]
