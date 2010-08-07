@@ -89,7 +89,7 @@ class CodeSnippets
   def html_cached(context, summary, &b)
     c = context.join
     @page_cache.read(c) do 
-      view_html(@doc_cache.read(c){b.call}, c, summary)
+      view_html(@doc_cache.read(c){b.call}, c, summary).to_s
     end
   end
 
