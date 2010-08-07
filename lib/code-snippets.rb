@@ -57,7 +57,7 @@ class CodeSnippets
     doc.root.elements['summary'].add Element.new('title').add_text(entry.text('title').to_s + tags)    
     prepare_doc doc
     
-    render_html doc, @xsl_doc_single    
+    render_html(doc, @xsl_doc_single).to_s
   end
   
   private
