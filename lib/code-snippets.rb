@@ -60,6 +60,10 @@ class CodeSnippets
     render_html(doc, @xsl_doc_single).to_s
   end
   
+  def reload_renderer()
+    load_renderer()
+  end
+  
   private
     
   def html_page(n)
