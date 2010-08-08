@@ -75,13 +75,13 @@ class CodeSnippets
   end  
   
   def html_user(user, pg_n)
-    @args = [user, pg_n]
+    @args = ['user', user, pg_n]
     summary = {title: 'Snippets', user: user}
     html_cached(context=@args, summary) { @blog.user(user).page(pg_n.to_i) }
   end
   
   def html_user_tag(user, tag, pg_n)  
-    @args = [user, tag, pg_n]
+    @args = ['user', user, 'tag', tag, pg_n]
     summary = {title: 'Snippets', user: user, tag: tag}
     html_cached(context=@args, summary) { @blog.user(user).tag(tag).page(pg_n.to_i) }
   end
