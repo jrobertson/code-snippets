@@ -64,6 +64,19 @@ class CodeSnippets
     load_renderer()
   end
   
+  def update(id ,h)
+    # fetch the user
+    user = h[:user]
+    h.delete :user
+    @blog.update_user(user, id, h)
+  end
+  
+  # -- xml interface ------------
+  
+  def raw_show(id)    
+    @blog.entry(id).to_s
+  end  
+  
   private
     
   def html_page(n)
