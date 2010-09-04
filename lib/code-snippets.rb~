@@ -15,20 +15,20 @@ class CodeSnippets
     load()
   end
 
-  def page(n='1', current_user='guest')   
-    html_page n, current_user
+  def page(n='1', logged_in='false')   
+    html_page n, logged_in
   end
   
-  def tag(tag, n='1', current_user='guest')
-    html_tag tag, n, current_user
+  def tag(tag, n='1', logged_in='false')
+    html_tag tag, n, logged_in
   end
   
-  def user(user, n='1', current_user='guest')
-    html_user(user, n, current_user)
+  def user(user, n='1', logged_in='false')
+    html_user(user, n, logged_in)
   end
 
-  def user_tag(user, tag, n='1', current_user='guest')
-    html_user_tag(user, tag, n, current_user)
+  def user_tag(user, tag, n='1', logged_in='false')
+    html_user_tag(user, tag, n, logged_in)
   end
   
   def rss()
@@ -47,7 +47,7 @@ class CodeSnippets
     rss_cached(user+tag) { @blog.user(user).tag(tag).page(1) }
   end    
   
-  def show(id, current_user='guest')
+  def show(id, logged_in='false')
     
     doc = Document.new('<result><summary/><records/></result>')            
     entry = @blog.entry(id).dup
@@ -57,7 +57,7 @@ class CodeSnippets
     doc.root.elements['summary'].add Element.new('title').add_text(entry.text('title').to_s + tags)    
     prepare_doc doc
     
-    render_html(doc, @xsl_doc_single, current_user).to_s
+    render_html(doc, @xsl_doc_single, logged_in).to_s
   end
   
   def reload_renderer()
@@ -79,38 +79,38 @@ class CodeSnippets
   
   private
     
-  def html_page(n, current_user='guest')
+  def html_page(n, logged_in='false')
     @args = [n]
     summary = {title: 'Snippets'}
-    html_cached(context=@args, summary, current_user) { @blog.page(n.to_i) }
+    html_cached(context=@args, summary, logged_in) { @blog.page(n.to_i) }
   end
   
-  def html_tag(tag, pg_n, current_user='guest')   
+  def html_tag(tag, pg_n, logged_in='false')   
     @args = [tag, pg_n]
     summary = {title: tag + ' code', tag: tag}  
-    html_cached(context=@args, summary, current_user) { @blog.tag(tag).page(pg_n.to_i) }
+    html_cached(context=@args, summary, logged_in) { @blog.tag(tag).page(pg_n.to_i) }
   end  
   
-  def html_user(user, pg_n, current_user='guest')
+  def html_user(user, pg_n, logged_in='false')
     @args = ['user', user, pg_n]
     summary = {title: 'Snippets', user: user}
-    html_cached(context=@args, summary, current_user) { @blog.user(user).page(pg_n.to_i) }
+    html_cached(context=@args, summary, logged_in) { @blog.user(user).page(pg_n.to_i) }
   end
   
-  def html_user_tag(user, tag, pg_n, current_user='guest')  
+  def html_user_tag(user, tag, pg_n, logged_in='false')  
     @args = ['user', user, 'tag', tag, pg_n]
     summary = {title: 'Snippets', user: user, tag: tag}
-    html_cached(context=@args, summary, current_user) { @blog.user(user).tag(tag).page(pg_n.to_i) }
+    html_cached(context=@args, summary, logged_in) { @blog.user(user).tag(tag).page(pg_n.to_i) }
   end
 
-  def html_cached(context, summary, current_user='guest', &b)
+  def html_cached(context, summary, logged_in='false', &b)
     c = context.join
     @page_cache.read(c) do 
-      view_html(@doc_cache.read(c){b.call}, c, summary, current_user).to_s
+      view_html(@doc_cache.read(c){b.call}, c, summary, logged_in).to_s
     end
   end
 
-  def view_html(raw_doc, context, summary, current_user='guest')
+  def view_html(raw_doc, context, summary, logged_in='false')
     
     blk = lambda do
       page_doc = Document.new(raw_doc.to_s)  
@@ -148,7 +148,7 @@ class CodeSnippets
     
     xml_doc =  context != '1' ? @hc_xml.read(context, &blk) : blk.call
     
-    render_html(xml_doc, @xsl_doc, current_user)
+    render_html(xml_doc, @xsl_doc, logged_in)
 
   end
 
@@ -245,8 +245,8 @@ class CodeSnippets
 
   end
   
-  def render_html(xml_doc, xsl_doc, current_user)
-    xsl_params = ['current_user', current_user]
+  def render_html(xml_doc, xsl_doc, logged_in)
+    xsl_params = ['logged_in', logged_in]
     Nokogiri::XSLT(xsl_doc.to_s).transform(Nokogiri::XML(xml_doc.to_s), Nokogiri::XSLT.quote_params(xsl_params))     
   end
   
