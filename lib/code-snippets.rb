@@ -77,6 +77,11 @@ class CodeSnippets
     @blog.entry(id).to_s
   end  
   
+  def create_entry(h)
+    user = h[:user]
+    @blog.create_entry(h, user)    
+  end
+  
   private
     
   def html_page(n, current_user='guest')
@@ -105,8 +110,8 @@ class CodeSnippets
 
   def html_cached(context, summary, current_user='guest', &b)
     c = context.join
-    @page_cache.read(c) do 
-      view_html(@doc_cache.read(c){b.call}, c, summary, current_user).to_s
+    @page_cache.read(c + current_user) do 
+      view_html(@doc_cache.read(c + current_user){b.call}, c, summary, current_user).to_s
     end
   end
 
@@ -146,7 +151,7 @@ class CodeSnippets
       page_doc
     end
     
-    xml_doc =  context != '1' ? @hc_xml.read(context, &blk) : blk.call
+    xml_doc =  context != '1' ? @hc_xml.read(context+current_user, &blk) : blk.call
     
     render_html(xml_doc, @xsl_doc, current_user)
 
@@ -245,7 +250,7 @@ class CodeSnippets
 
   end
   
-  def render_html(xml_doc, xsl_doc, current_user)
+  def render_html(xml_doc, xsl_doc, current_user='guest')
     xsl_params = ['current_user', current_user]
     Nokogiri::XSLT(xsl_doc.to_s).transform(Nokogiri::XML(xml_doc.to_s), Nokogiri::XSLT.quote_params(xsl_params))     
   end
