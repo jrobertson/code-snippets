@@ -82,6 +82,10 @@ class CodeSnippets
     @blog.create_entry(h, user)    
   end
   
+  def update(id)
+    @blog.delete(id)
+  end
+  
   private
     
   def html_page(n, current_user='guest')
