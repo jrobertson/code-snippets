@@ -65,7 +65,7 @@ class CodeSnippets
   end
   
   def update(id ,h)
-    @doc_cache.reset
+    cache_reset
     # fetch the user
     user = h[:user]
     h.delete :user
@@ -79,13 +79,13 @@ class CodeSnippets
   end  
   
   def create_entry(h)
-    @doc_cache.reset
+    cache_reset
     user = h[:user]
     @blog.create_entry(h, user)    
   end
   
   def delete(id)
-    @doc_cache.reset
+    cache_reset
     @blog.delete(id)    
   end
   
@@ -278,6 +278,11 @@ class CodeSnippets
       desc.text = desc.text.to_s.gsub(/\n/,'\0<br />')
     end
     rss_doc.to_s
+  end
+  
+  def cache_reset()
+    @page_cache.reset
+    @doc_cache.reset
   end
         
 end
