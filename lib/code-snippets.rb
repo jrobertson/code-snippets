@@ -86,7 +86,8 @@ class CodeSnippets
   
   def delete(id)
     cache_reset
-    @blog.delete(id)    
+    @blog.delete(id)
+    "record deleted"
   end
   
   private
@@ -283,6 +284,7 @@ class CodeSnippets
   def cache_reset()
     @page_cache.reset
     @doc_cache.reset
+    @hc_xml.reset
   end
         
 end
