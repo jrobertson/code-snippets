@@ -89,6 +89,10 @@ class CodeSnippets
     @blog.delete(id)
     "record deleted"
   end
+
+  def raw_page(n='1')
+    @blog.page n.to_i
+  end
   
   private
     
