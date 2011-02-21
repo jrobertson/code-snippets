@@ -215,7 +215,7 @@ class CodeSnippets
 
   def load()
 
-    @blog = DynarexUsersBlog.new(filepath: @h[:filepath], user: @h[:default_user])            
+    @blog = DynarexUsersBlog.new(file_path: @h[:file_path], user: @h[:default_user])
 
     if @blog.tags.length > 0 then
       @tags = sidetags(@blog.tags) 
